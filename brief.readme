@@ -14,44 +14,42 @@ Hva er relasjonene mellom entitetene?
 
 
 ✅ Løsning – Datamodell
-For å dekke kravene trenger vi:
+Alt er modellert i `case1.dbml`, klar til å limes rett inn i dbdiagram.io. Tabellen inneholder:
 
-Avdeling (eier prosjekter og har ansatte)
-Prosjekt (tilhører én avdeling)
-Ansatt (tilhører én avdeling)
-AnsattProsjekt (koblingstabell for mange-til-mange mellom Ansatt og Prosjekt, med tid brukt)
+- Avdeling (eier både prosjekter og ansatte)
+- Prosjekt (tilhører én avdeling)
+- Ansatt (tilhører én avdeling)
+- AnsattProsjekt (koblingstabell med tid brukt per ansatt og prosjekt)
 
-
+Utdrag fra `case1.dbml`:
 
 Table Avdeling {
-  AvdNr integer [pk]
-  AvdNavn varchar
+  AvdNr integer [pk, increment]
+  AvdNavn varchar(100) [not null]
 }
 
 Table Prosjekt {
-  ProsjektNr integer [pk]
-  Tittel varchar
-  AvdNr integer [ref: > Avdeling.AvdNr] // Prosjekt eies av en avdeling
+  ProsjektNr integer [pk, increment]
+  Tittel varchar(200) [not null]
+  AvdNr integer [not null, ref: > Avdeling.AvdNr]
 }
 
 Table Ansatt {
-  Id int [pk]
-  Fornavn varchar
-  Etternavn varchar
-  brukernavn varchar
-  AvdNr integer [ref: > Avdeling.AvdNr] // Ansatt tilhører en avdeling
+  Id integer [pk, increment]
+  Fornavn varchar(50) [not null]
+  Etternavn varchar(50) [not null]
+  Brukernavn varchar(50) [unique, not null]
+  AvdNr integer [not null, ref: > Avdeling.AvdNr]
 }
 
-// Koblingstabell for mange-til-mange mellom Ansatt og Prosjekt
 Table AnsattProsjekt {
-  AnsattId int [ref: > Ansatt.Id]
-  ProsjektNr int [ref: > Prosjekt.ProsjektNr]
-  TidBrukt decimal // timer brukt
+  AnsattId integer [ref: > Ansatt.Id]
+  ProsjektNr integer [ref: > Prosjekt.ProsjektNr]
+  TidBrukt decimal(10,2) [not null, default: 0]
   indexes {
-    (AnsattId, ProsjektNr) [pk] // Kompositt primærnøkkel
+    (AnsattId, ProsjektNr) [pk]
   }
 }
-
 
 Relasjoner
 
@@ -61,11 +59,6 @@ Ansatt ↔ Prosjekt: M:N (løst med koblingstabellen AnsattProsjekt)
 
 Kort oppsummering
 
-Du startet med tre tabeller (Avdeling, Prosjekt, Ansatt)
-Casen krever relasjoner og en koblingstabell med tid brukt
-Full løsning: legg til PK, FK og tabellen AnsattProsjekt
-Bruk DBML-koden over i dbdiagram.io for å få et ferdig ER-diagram
-Jeg har lagt ved eksempelspørringer for rapportering
-
-
-jeg ønsker at du går over koden og sjekker at den er korrekt iforhold til dbdiagram og så kopierer den ut og retter på den eventuelt 
+- DBML-en er kvalitetssikret mot skjermdumpen fra dbdiagram.io
+- Bruk `case1.dbml` direkte som modell i databasekurset (Kristiania, case 1)
+- TidBrukt feltet dekker rapporteringskravet om tidsregistrering per ansatt og prosjekt

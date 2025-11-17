@@ -1,0 +1,17 @@
+# Redigeringsfiler
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Dump/exporter
+*.sql.gz
+*.sql.zip
+*.bak
+dump.sql
+
+# Midlertidig miljø
+.env
+.env.local
+.idea/
+.vscode/
