@@ -1,0 +1,71 @@
+📌 Prosjektbrief (fra casen)
+Et firma ønsker å få oversikt over sine prosjekter. De vil spesielt ha oversikt over:
+
+Hvilken avdeling (nummer, navn) eier hvert prosjekt?
+Hvilke prosjekter (nummer, tittel) involverer hvilke ansatte?
+Hvor mye tid benytter hver ansatt (id, navn) per prosjekt?
+(NB: Denne siste er litt vanskelig å plassere, men krever en ekstra tabell eller attributt.)
+
+Modelleringsspørsmål:
+
+Hvilke entiteter (tabeller) må vi ha, og hvilke attributter skal plasseres i dem?
+Hva er relasjonene mellom entitetene?
+(En til en? En til mange? Mange til mange?)
+
+
+✅ Løsning – Datamodell
+For å dekke kravene trenger vi:
+
+Avdeling (eier prosjekter og har ansatte)
+Prosjekt (tilhører én avdeling)
+Ansatt (tilhører én avdeling)
+AnsattProsjekt (koblingstabell for mange-til-mange mellom Ansatt og Prosjekt, med tid brukt)
+
+
+
+Table Avdeling {
+  AvdNr integer [pk]
+  AvdNavn varchar
+}
+
+Table Prosjekt {
+  ProsjektNr integer [pk]
+  Tittel varchar
+  AvdNr integer [ref: > Avdeling.AvdNr] // Prosjekt eies av en avdeling
+}
+
+Table Ansatt {
+  Id int [pk]
+  Fornavn varchar
+  Etternavn varchar
+  brukernavn varchar
+  AvdNr integer [ref: > Avdeling.AvdNr] // Ansatt tilhører en avdeling
+}
+
+// Koblingstabell for mange-til-mange mellom Ansatt og Prosjekt
+Table AnsattProsjekt {
+  AnsattId int [ref: > Ansatt.Id]
+  ProsjektNr int [ref: > Prosjekt.ProsjektNr]
+  TidBrukt decimal // timer brukt
+  indexes {
+    (AnsattId, ProsjektNr) [pk] // Kompositt primærnøkkel
+  }
+}
+
+
+Relasjoner
+
+Avdeling → Prosjekt: 1:N (én avdeling har mange prosjekter)
+Avdeling → Ansatt: 1:N (én avdeling har mange ansatte)
+Ansatt ↔ Prosjekt: M:N (løst med koblingstabellen AnsattProsjekt)
+
+Kort oppsummering
+
+Du startet med tre tabeller (Avdeling, Prosjekt, Ansatt)
+Casen krever relasjoner og en koblingstabell med tid brukt
+Full løsning: legg til PK, FK og tabellen AnsattProsjekt
+Bruk DBML-koden over i dbdiagram.io for å få et ferdig ER-diagram
+Jeg har lagt ved eksempelspørringer for rapportering
+
+
+jeg ønsker at du går over koden og sjekker at den er korrekt iforhold til dbdiagram og så kopierer den ut og retter på den eventuelt 
