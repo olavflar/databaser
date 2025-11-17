@@ -1,0 +1,37 @@
+Table Avdeling {
+  AvdNr integer [pk, increment]
+  AvdNavn varchar(100) [not null]
+
+  Note: 'Avdeling som eier prosjekter og har ansatte'
+}
+
+Table Prosjekt {
+  ProsjektNr integer [pk, increment]
+  Tittel varchar(200) [not null]
+  AvdNr integer [not null, ref: > Avdeling.AvdNr]
+
+  Note: 'Prosjekt som eies av én avdeling'
+}
+
+Table Ansatt {
+  Id integer [pk, increment]
+  Fornavn varchar(50) [not null]
+  Etternavn varchar(50) [not null]
+  Brukernavn varchar(50) [unique, not null]
+  AvdNr integer [not null, ref: > Avdeling.AvdNr]
+
+  Note: 'Ansatt som tilhører én avdeling'
+}
+
+// Koblingstabell for mange-til-mange mellom Ansatt og Prosjekt
+Table AnsattProsjekt {
+  AnsattId integer [ref: > Ansatt.Id]
+  ProsjektNr integer [ref: > Prosjekt.ProsjektNr]
+  TidBrukt decimal(10,2) [not null, default: 0]
+
+  indexes {
+    (AnsattId, ProsjektNr) [pk]
+  }
+
+  Note: 'Registrerer hvilke ansatte som jobber på prosjekter og hvor mye tid'
+}
